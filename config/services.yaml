@@ -1,0 +1,3 @@
+services:
+  hallo_verden.jwt_extractor.bearer:
+    class: HalloVerden\JwtAuthenticatorBundle\JwtExtractor\BearerJwtExtractor
