@@ -52,7 +52,7 @@ class JwtAuthenticatorFactory implements AuthenticatorFactoryInterface {
         if (empty($v)) {
           return null;
         }
-      });
+      })->end();
   }
 
   public function getPriority(): int {
