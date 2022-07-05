@@ -16,7 +16,7 @@ class HalloVerdenJwtAuthenticatorBundle extends Bundle {
     parent::build($container);
 
     /** @var SecurityExtension $extension */
-    $extension =$container->getExtension('security');
+    $extension = $container->getExtension('security');
     $extension->addAuthenticatorFactory(new JwtAuthenticatorFactory());
   }
 
