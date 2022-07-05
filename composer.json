@@ -1,0 +1,22 @@
+{
+    "name": "halloverden/symfony-jwt-authenticator-bundle",
+    "description": "JWT authenticator for Symfony",
+    "type": "symfony-bundle",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "HalloVerden\\JwtAuthenticatorBundle\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Tom Roar Furunes",
+            "email": "tom.roar@halloverden.no"
+        }
+    ],
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "require": {
+        "php": ">=8.1"
+    }
+}
