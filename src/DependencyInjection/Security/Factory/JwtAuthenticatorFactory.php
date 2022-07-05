@@ -48,7 +48,7 @@ class JwtAuthenticatorFactory implements AuthenticatorFactoryInterface {
           ->scalarNode('user_identifier_claim')->isRequired()->defaultValue('sub')->end()
         ->end()
       ->end()
-      ->beforeNormalization()->always(function ($v) {
+      ->validate()->always(function ($v) {
         if (empty($v)) {
           return null;
         }
