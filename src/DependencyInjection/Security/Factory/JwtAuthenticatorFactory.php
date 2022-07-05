@@ -36,18 +36,23 @@ class JwtAuthenticatorFactory implements AuthenticatorFactoryInterface {
    * @param ArrayNodeDefinition $builder
    */
   public function addConfiguration(NodeDefinition $builder): void {
-//    $builder
-//      ->useAttributeAsKey('name')
-//      ->arrayPrototype()
-//        ->children()
-//          ->scalarNode('jws_loader')->isRequired()->defaultValue('hallo_verden_default')->end()
-//          ->scalarNode('key_set')->end()
-//          ->scalarNode('claim_checker')->isRequired()->defaultValue('hallo_verden_default')->end()
-//          ->arrayNode('mandatory_claims')->isRequired()->defaultValue([])->scalarPrototype()->end()->end()
-//          ->scalarNode('jtw_extractor')->isRequired()->defaultValue('hallo_verden.jwt_extractor.bearer')->end()
-//          ->scalarNode('user_identifier_claim')->isRequired()->defaultValue('sub')->end()
-//        ->end()
-//      ->end();
+    $builder
+      ->useAttributeAsKey('name')
+      ->arrayPrototype()
+        ->children()
+          ->scalarNode('jws_loader')->isRequired()->defaultValue('hallo_verden_default')->end()
+          ->scalarNode('key_set')->end()
+          ->scalarNode('claim_checker')->isRequired()->defaultValue('hallo_verden_default')->end()
+          ->arrayNode('mandatory_claims')->isRequired()->defaultValue([])->scalarPrototype()->end()->end()
+          ->scalarNode('jtw_extractor')->isRequired()->defaultValue('hallo_verden.jwt_extractor.bearer')->end()
+          ->scalarNode('user_identifier_claim')->isRequired()->defaultValue('sub')->end()
+        ->end()
+      ->end()
+      ->beforeNormalization()->always(function ($v) {
+        if (empty($v)) {
+          return null;
+        }
+      });
   }
 
   public function getPriority(): int {
