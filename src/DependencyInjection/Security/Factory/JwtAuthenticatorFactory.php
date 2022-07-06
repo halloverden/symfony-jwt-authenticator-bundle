@@ -54,7 +54,7 @@ class JwtAuthenticatorFactory implements AuthenticatorFactoryInterface {
       ->validate()
         ->ifTrue(fn($v) => isset($v[$this->getKey()]) && empty($v[$this->getKey()]))
         ->then(function ($v) {
-          \unset($v[$this->getKey()]);
+          unset($v[$this->getKey()]);
           return $v;
         })
       ->end();
