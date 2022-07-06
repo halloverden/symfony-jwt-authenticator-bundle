@@ -38,8 +38,8 @@ class JwtAuthenticatorFactory implements AuthenticatorFactoryInterface {
   public function addConfiguration(NodeDefinition $builder): void {
     $builder
       ->useAttributeAsKey('name')
+      ->addDefaultsIfNotSet()
       ->arrayPrototype()
-        ->addDefaultsIfNotSet()
         ->children()
           ->scalarNode('jws_loader')->isRequired()->defaultValue('hallo_verden_default')->end()
           ->scalarNode('key_set')->end()
