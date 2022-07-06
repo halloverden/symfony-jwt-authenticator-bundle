@@ -12,8 +12,11 @@ use Symfony\Component\DependencyInjection\Reference;
 
 class JwtAuthenticatorFactory implements AuthenticatorFactoryInterface {
 
+  /**
+   * Added to give a proper error message if someone attempts to use the authenticator without enabling authenticator manger.
+   */
   public function create() {
-    throw new \LogicException('xdd');
+    throw new \LogicException("'enable_authenticator_manager' needs to be true to use the jwt authenticator");
   }
 
   /**

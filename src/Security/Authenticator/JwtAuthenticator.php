@@ -15,6 +15,7 @@ use Symfony\Component\Security\Core\User\UserProviderInterface;
 use Symfony\Component\Security\Http\Authenticator\AuthenticatorInterface;
 use Symfony\Component\Security\Http\Authenticator\Passport\Badge\UserBadge;
 use Symfony\Component\Security\Http\Authenticator\Passport\Passport;
+use Symfony\Component\Security\Http\Authenticator\Passport\PassportInterface;
 use Symfony\Component\Security\Http\Authenticator\Passport\SelfValidatingPassport;
 
 class JwtAuthenticator implements AuthenticatorInterface {
@@ -91,6 +92,17 @@ class JwtAuthenticator implements AuthenticatorInterface {
     // TODO event
 
     return $token;
+  }
+
+  /**
+   * @inheritDoc
+   */
+  public function createAuthenticatedToken(PassportInterface $passport, string $firewallName): TokenInterface {
+    if (!$passport instanceof Passport) {
+      throw new \RuntimeException(\sprintf('$passport must be instance of %s', Passport::class));
+    }
+
+    return $this->createToken($passport, $firewallName);
   }
 
 }
