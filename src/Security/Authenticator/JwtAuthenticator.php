@@ -80,8 +80,8 @@ class JwtAuthenticator implements AuthenticatorInterface {
       $passport->getUser(),
       $firewallName,
       $passport->getUser()->getRoles(),
-      $passport->getAttribute(self::PASSPORT_ATTRIBUTE_JWT),
-      $passport->getAttribute(self::PASSPORT_ATTRIBUTE_TOKEN)
+      $passport->getAttribute(self::PASSPORT_ATTRIBUTE_TOKEN),
+      $passport->getAttribute(self::PASSPORT_ATTRIBUTE_JWT)
     );
 
     // TODO event
