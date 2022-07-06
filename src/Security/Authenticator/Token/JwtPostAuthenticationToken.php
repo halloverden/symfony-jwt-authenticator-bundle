@@ -2,12 +2,13 @@
 
 namespace HalloVerden\JwtAuthenticatorBundle\Security\Authenticator\Token;
 
+use HalloVerden\JwtAuthenticatorBundle\Jwt;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Http\Authenticator\Token\PostAuthenticationToken;
 
 class JwtPostAuthenticationToken extends PostAuthenticationToken {
-  private array $payload;
-  private string $jwt;
+  private readonly string $token;
+  private readonly Jwt $jwt;
 
   /**
    * JwtPostAuthenticationToken constructor.
@@ -15,26 +16,26 @@ class JwtPostAuthenticationToken extends PostAuthenticationToken {
    * @param UserInterface $user
    * @param string        $firewallName
    * @param array         $roles
-   * @param array         $payload
-   * @param string        $jwt
+   * @param string        $token
+   * @param Jwt           $jwt
    */
-  public function __construct(UserInterface $user, string $firewallName, array $roles, array $payload, string $jwt) {
+  public function __construct(UserInterface $user, string $firewallName, array $roles, string $token, Jwt $jwt) {
     parent::__construct($user, $firewallName, $roles);
-    $this->payload = $payload;
+    $this->token = $token;
     $this->jwt = $jwt;
-  }
-
-  /**
-   * @return array
-   */
-  public function getPayload(): array {
-    return $this->payload;
   }
 
   /**
    * @return string
    */
-  public function getJwt(): string {
+  public function getToken(): string {
+    return $this->token;
+  }
+
+  /**
+   * @return Jwt
+   */
+  public function getJwt(): Jwt {
     return $this->jwt;
   }
 

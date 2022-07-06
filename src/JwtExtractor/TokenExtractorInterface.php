@@ -4,7 +4,7 @@ namespace HalloVerden\JwtAuthenticatorBundle\JwtExtractor;
 
 use Symfony\Component\HttpFoundation\Request;
 
-interface JwtExtractorInterface {
+interface TokenExtractorInterface {
 
   /**
    * Extracts jwt from the Request
@@ -13,6 +13,6 @@ interface JwtExtractorInterface {
    *
    * @return string|null
    */
-  public function extractJwt(Request $request): ?string;
+  public function extractToken(Request $request): ?string;
 
 }

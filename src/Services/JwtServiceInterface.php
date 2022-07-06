@@ -2,13 +2,15 @@
 
 namespace HalloVerden\JwtAuthenticatorBundle\Services;
 
+use HalloVerden\JwtAuthenticatorBundle\Jwt;
+
 interface JwtServiceInterface {
 
   /**
    * @param string $token
    *
-   * @return array claims
+   * @return Jwt
    */
-  public function parseAndVerify(string $token): array;
+  public function parseAndVerify(string $token): Jwt;
 
 }

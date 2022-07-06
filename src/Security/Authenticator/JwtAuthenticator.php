@@ -2,8 +2,7 @@
 
 namespace HalloVerden\JwtAuthenticatorBundle\Security\Authenticator;
 
-use HalloVerden\JwtAuthenticatorBundle\Exception\InvalidTokenException;
-use HalloVerden\JwtAuthenticatorBundle\JwtExtractor\JwtExtractorInterface;
+use HalloVerden\JwtAuthenticatorBundle\JwtExtractor\TokenExtractorInterface;
 use HalloVerden\JwtAuthenticatorBundle\Security\Authenticator\Token\JwtPostAuthenticationToken;
 use HalloVerden\JwtAuthenticatorBundle\Services\JwtServiceInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -19,41 +18,37 @@ use Symfony\Component\Security\Http\Authenticator\Passport\PassportInterface;
 use Symfony\Component\Security\Http\Authenticator\Passport\SelfValidatingPassport;
 
 class JwtAuthenticator implements AuthenticatorInterface {
+  private const PASSPORT_ATTRIBUTE_TOKEN = 'token';
   private const PASSPORT_ATTRIBUTE_JWT = 'jwt';
-  private const PASSPORT_ATTRIBUTE_CLAIMS = 'claims';
 
   /**
    * JwtAuthenticator constructor.
    */
   public function __construct(
-    private readonly JwtExtractorInterface $jwtTokenExtractor,
-    private readonly JwtServiceInterface $jwtService,
-    private readonly UserProviderInterface $userProvider,
-    private readonly string $userIdentifierClaim = 'sub') {
+    private readonly TokenExtractorInterface $jwtTokenExtractor,
+    private readonly JwtServiceInterface     $jwtService,
+    private readonly UserProviderInterface   $userProvider,
+    private readonly string                  $userIdentifierClaim = 'sub') {
   }
 
   /**
    * @inheritDoc
    */
   public function supports(Request $request): ?bool {
-    return null !== $this->jwtTokenExtractor->extractJwt($request);
+    return null !== $this->jwtTokenExtractor->extractToken($request);
   }
 
   /**
    * @inheritDoc
    */
   public function authenticate(Request $request): Passport {
-    $jwt = $this->jwtTokenExtractor->extractJwt($request);
-    $claims = $this->jwtService->parseAndVerify($jwt);
+    $token = $this->jwtTokenExtractor->extractToken($request);
+    $jwt = $this->jwtService->parseAndVerify($token);
 
-    if (!isset($claims[$this->userIdentifierClaim])) {
-      throw new InvalidTokenException();
-    }
+    $passport = new SelfValidatingPassport(new UserBadge($jwt->getClaim($this->userIdentifierClaim), $this->userProvider->loadUserByIdentifier(...)));
 
-    $passport = new SelfValidatingPassport(new UserBadge($claims[$this->userIdentifierClaim], $this->userProvider->loadUserByIdentifier(...)));
-
+    $passport->setAttribute(self::PASSPORT_ATTRIBUTE_TOKEN, $token);
     $passport->setAttribute(self::PASSPORT_ATTRIBUTE_JWT, $jwt);
-    $passport->setAttribute(self::PASSPORT_ATTRIBUTE_CLAIMS, $claims);
 
     return $passport;
   }
@@ -85,8 +80,8 @@ class JwtAuthenticator implements AuthenticatorInterface {
       $passport->getUser(),
       $firewallName,
       $passport->getUser()->getRoles(),
-      $passport->getAttribute(self::PASSPORT_ATTRIBUTE_CLAIMS),
-      $passport->getAttribute(self::PASSPORT_ATTRIBUTE_JWT)
+      $passport->getAttribute(self::PASSPORT_ATTRIBUTE_JWT),
+      $passport->getAttribute(self::PASSPORT_ATTRIBUTE_TOKEN)
     );
 
     // TODO event

@@ -48,7 +48,7 @@ class JwtAuthenticatorFactory implements AuthenticatorFactoryInterface {
       ->arrayPrototype()
         ->children()
           ->scalarNode('jws_loader')->defaultValue('hallo_verden_default')->end()
-          ->scalarNode('key_set')->end()
+          ->scalarNode('key_set')->isRequired()->end()
           ->scalarNode('claim_checker')->defaultValue('hallo_verden_default')->end()
           ->arrayNode('mandatory_claims')->defaultValue([])->scalarPrototype()->end()->end()
           ->scalarNode('jtw_extractor')->defaultValue('hallo_verden.jwt_extractor.bearer')->end()
@@ -74,7 +74,7 @@ class JwtAuthenticatorFactory implements AuthenticatorFactoryInterface {
 
   private function _createAuthenticator(ContainerBuilder $container, string $firewallName, array $config, string $userProviderId, string $key): string {
     $authenticatorId = 'security.authenticator.hallo_verden_jwt.'.$key.'.'.$firewallName;
-    $jwtServiceId = 'hallo_verden.jwt_service'.$key.'.'.$firewallName;
+    $jwtServiceId = 'hallo_verden.jwt_service.'.$key.'.'.$firewallName;
 
     $mandatoryClaims = $config['mandatory_claims'];
     if (\in_array($config['user_identifier_claim'], $mandatoryClaims)) {
