@@ -12,6 +12,10 @@ use Symfony\Component\DependencyInjection\Reference;
 
 class JwtAuthenticatorFactory implements AuthenticatorFactoryInterface {
 
+  public function create() {
+    throw new \LogicException('xdd');
+  }
+
   /**
    * @inheritDoc
    */
