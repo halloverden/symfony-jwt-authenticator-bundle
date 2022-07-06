@@ -39,6 +39,7 @@ class JwtAuthenticatorFactory implements AuthenticatorFactoryInterface {
     $builder
       ->useAttributeAsKey('name')
       ->arrayPrototype()
+        ->addDefaultsIfNotSet()
         ->children()
           ->scalarNode('jws_loader')->isRequired()->defaultValue('hallo_verden_default')->end()
           ->scalarNode('key_set')->end()
@@ -49,6 +50,7 @@ class JwtAuthenticatorFactory implements AuthenticatorFactoryInterface {
         ->end()
       ->end();
 
+    // get the parent array node builder ("firewalls")
     $factoryRootNode = $builder->end()->end();
     $factoryRootNode
       ->validate()
