@@ -1,0 +1,17 @@
+<?php
+
+namespace HalloVerden\JwtAuthenticatorBundle\Exception;
+
+use Symfony\Component\Security\Core\Exception\AuthenticationException;
+
+class InvalidTokenException extends AuthenticationException {
+  private const MESSAGE = 'INVALID_TOKEN';
+
+  /**
+   * @inheritDoc
+   */
+  public function getMessageKey(): string {
+    return self::MESSAGE;
+  }
+
+}
