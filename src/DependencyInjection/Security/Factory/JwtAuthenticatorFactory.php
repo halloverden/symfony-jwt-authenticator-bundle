@@ -88,7 +88,7 @@ class JwtAuthenticatorFactory implements AuthenticatorFactoryInterface {
       ->addArgument($mandatoryClaims);
 
     $container->register($authenticatorId, JwtAuthenticator::class)
-      ->addArgument(new Reference($config['jtw_extractor']))
+      ->addArgument(new Reference($config['token_extractor']))
       ->addArgument(new Reference($jwtServiceId))
       ->addArgument(new Reference($userProviderId));
 
