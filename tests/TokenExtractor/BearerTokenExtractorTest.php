@@ -1,8 +1,8 @@
 <?php
 
-namespace HalloVerden\JwtAuthenticatorBundle\Tests\Services;
+namespace HalloVerden\JwtAuthenticatorBundle\Tests\TokenExtractor;
 
-use HalloVerden\JwtAuthenticatorBundle\JwtExtractor\BearerTokenExtractor;
+use HalloVerden\JwtAuthenticatorBundle\TokenExtractor\BearerTokenExtractor;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\HttpFoundation\Request;
 

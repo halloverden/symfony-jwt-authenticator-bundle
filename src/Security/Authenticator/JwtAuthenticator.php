@@ -2,7 +2,7 @@
 
 namespace HalloVerden\JwtAuthenticatorBundle\Security\Authenticator;
 
-use HalloVerden\JwtAuthenticatorBundle\JwtExtractor\TokenExtractorInterface;
+use HalloVerden\JwtAuthenticatorBundle\TokenExtractor\TokenExtractorInterface;
 use HalloVerden\JwtAuthenticatorBundle\Security\Authenticator\Token\JwtPostAuthenticationToken;
 use HalloVerden\JwtAuthenticatorBundle\Services\JwtServiceInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
