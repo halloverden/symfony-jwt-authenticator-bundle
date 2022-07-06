@@ -40,12 +40,12 @@ class JwtAuthenticatorFactory implements AuthenticatorFactoryInterface {
       ->useAttributeAsKey('name')
       ->arrayPrototype()
         ->children()
-          ->scalarNode('jws_loader')->isRequired()->defaultValue('hallo_verden_default')->end()
+          ->scalarNode('jws_loader')->defaultValue('hallo_verden_default')->end()
           ->scalarNode('key_set')->end()
-          ->scalarNode('claim_checker')->isRequired()->defaultValue('hallo_verden_default')->end()
-          ->arrayNode('mandatory_claims')->isRequired()->defaultValue([])->scalarPrototype()->end()->end()
-          ->scalarNode('jtw_extractor')->isRequired()->defaultValue('hallo_verden.jwt_extractor.bearer')->end()
-          ->scalarNode('user_identifier_claim')->isRequired()->defaultValue('sub')->end()
+          ->scalarNode('claim_checker')->defaultValue('hallo_verden_default')->end()
+          ->arrayNode('mandatory_claims')->defaultValue([])->scalarPrototype()->end()->end()
+          ->scalarNode('jtw_extractor')->defaultValue('hallo_verden.jwt_extractor.bearer')->end()
+          ->scalarNode('user_identifier_claim')->defaultValue('sub')->end()
         ->end()
       ->end();
 
