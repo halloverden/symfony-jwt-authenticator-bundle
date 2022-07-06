@@ -1,6 +1,6 @@
 <?php
 
-namespace HalloVerden\JwtAuthenticatorBundle\JwtExtractor;
+namespace HalloVerden\JwtAuthenticatorBundle\TokenExtractor;
 
 use Symfony\Component\HttpFoundation\Request;
 

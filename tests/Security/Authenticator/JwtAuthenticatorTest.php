@@ -1,10 +1,10 @@
 <?php
 
-namespace HalloVerden\JwtAuthenticatorBundle\Tests\Services;
+namespace HalloVerden\JwtAuthenticatorBundle\Tests\Security\Authenticator;
 
 use HalloVerden\JwtAuthenticatorBundle\Exception\InvalidTokenException;
 use HalloVerden\JwtAuthenticatorBundle\Jwt;
-use HalloVerden\JwtAuthenticatorBundle\JwtExtractor\TokenExtractorInterface;
+use HalloVerden\JwtAuthenticatorBundle\TokenExtractor\TokenExtractorInterface;
 use HalloVerden\JwtAuthenticatorBundle\Security\Authenticator\JwtAuthenticator;
 use HalloVerden\JwtAuthenticatorBundle\Security\Authenticator\Token\JwtPostAuthenticationToken;
 use HalloVerden\JwtAuthenticatorBundle\Services\JwtServiceInterface;
