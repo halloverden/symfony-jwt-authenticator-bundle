@@ -70,13 +70,13 @@ security:
           key_set: 'my_ket_set'
 ```
 
-For each key in `hallo_verden_jwt` an authenticator is created.
+For each key in `hallo_verden_jwt` a authenticator is created.
 
 #### Key set (`key_set`)
 
 You need to provide a key set.
 
-See [PHP JWT Framework](https://web-token.spomky-labs.com/the-symfony-bundle/key-and-key-set-management/key-set-management-jwkset#key-sets-as-services) for how to create your own loader.) for how to provide a key set.
+See [PHP JWT Framework](https://web-token.spomky-labs.com/the-symfony-bundle/key-and-key-set-management/key-set-management-jwkset#key-sets-as-services) for how to provide a key set.
 
 #### JWS Loader (`jws_loader`)
 
@@ -104,11 +104,11 @@ This claim is sent to the user provider for retrieving the user.
 
 The default extractor `hallo_verden.token_extractor.bearer` get the bearer token from the authorization header.
 You can create your own extractor by implementing the [TokenExtractorInterface](/src/TokenExtractor/TokenExtractorInterface.php)
-and add set the service id to this option.
+and set the service id to this option.
 
 #### Failure handler (`failure_handler`)
 
-By default, this response is sent on failure:
+By default, the following response is sent on failure:
 ```json
 {
   "error": "INVALID_TOKEN"
@@ -116,4 +116,4 @@ By default, this response is sent on failure:
 ```
 
 You can modify this by creating a service implementing the [AuthenticationFailureHandlerInterface](https://github.com/symfony/symfony/blob/6.2/src/Symfony/Component/Security/Http/Authentication/AuthenticationFailureHandlerInterface.php)
-and add set the service id to this option.
+and set the service id to this option.
