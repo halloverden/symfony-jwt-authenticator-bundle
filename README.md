@@ -1,7 +1,7 @@
 HalloVerdenJwtAuthenticatorBundle
 =================================
 
-This bundle provides an JWT authenticator for Symfony applications.
+This bundle provides a JWT authenticator for Symfony applications.
 It's using [PHP JWT Framework](https://github.com/web-token/jwt-framework) for parsing and validating the JWT.
 
 ## Installation
@@ -70,7 +70,7 @@ security:
           key_set: 'my_ket_set'
 ```
 
-For each key in `hallo_verden_jwt` a authenticator is created.
+For each key in `hallo_verden_jwt` an authenticator is created.
 
 #### Key set (`key_set`)
 
