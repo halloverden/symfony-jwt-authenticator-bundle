@@ -34,7 +34,11 @@ class JwtAuthenticatorTest extends TestCase {
 
     $jwtAuthenticator = new JwtAuthenticator($tokenExtractor, $jwtService, $userProvider);
 
-    $request = $this->createMock(Request::class);
+    $request = new Request();
+
+    $jwtAuthenticator->supports($request);
+    $this->assertEquals('token', $request->attributes->get('security_jwt_authenticator_token'));
+    $this->assertSame($jwt, $request->attributes->get('security_jwt_authenticator_jwt'));
 
     $passport = $jwtAuthenticator->authenticate($request);
 
@@ -44,7 +48,7 @@ class JwtAuthenticatorTest extends TestCase {
     $this->assertSame($user, $passport->getUser());
   }
 
-  public function testAuthenticate_invalidToken_shouldThrowInvalidTokenException() {
+  public function testSupports_invalidToken_shouldReturnFalse() {
     $tokenExtractor = $this->createMock(TokenExtractorInterface::class);
     $tokenExtractor->method('extractToken')->willReturn('token');
 
@@ -55,10 +59,10 @@ class JwtAuthenticatorTest extends TestCase {
 
     $jwtAuthenticator = new JwtAuthenticator($tokenExtractor, $jwtService, $userProvider);
 
-    $request = $this->createMock(Request::class);
+    $request = new Request();
 
-    $this->expectException(InvalidTokenException::class);
-    $jwtAuthenticator->authenticate($request);
+    $supports = $jwtAuthenticator->supports($request);
+    $this->assertFalse($supports);
   }
 
   public function testOnAuthenticationFailure_invalidToken_shouldReturnJsonResponse() {
