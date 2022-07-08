@@ -86,13 +86,14 @@ class JwtAuthenticatorFactory implements AuthenticatorFactoryInterface {
       ->addArgument(new Reference('jose.claim_checker.' . $config['claim_checker']))
       ->addArgument(new Reference('jose.jws_loader.' .$config['jws_loader']))
       ->addArgument(isset($config['key_set']) ? new Reference('jose.key_set.' . $config['key_set']) : null)
-      ->addArgument(isset($config['failure_handler']) ? new Reference($config['failure_handler']): null)
       ->addArgument($mandatoryClaims);
 
     $container->register($authenticatorId, JwtAuthenticator::class)
       ->addArgument(new Reference($config['token_extractor']))
       ->addArgument(new Reference($jwtServiceId))
-      ->addArgument(new Reference($userProviderId));
+      ->addArgument(new Reference($userProviderId))
+      ->addArgument(isset($config['failure_handler']) ? new Reference($config['failure_handler']): null)
+      ->addArgument($config['user_identifier_claim']);
 
     return $authenticatorId;
   }
