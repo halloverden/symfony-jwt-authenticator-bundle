@@ -4,6 +4,7 @@ namespace HalloVerden\JwtAuthenticatorBundle\Security\Authenticator;
 
 use HalloVerden\JwtAuthenticatorBundle\Exception\InvalidTokenException;
 use HalloVerden\JwtAuthenticatorBundle\Jwt;
+use HalloVerden\JwtAuthenticatorBundle\Security\JwtAwareUserProviderInterface;
 use HalloVerden\JwtAuthenticatorBundle\TokenExtractor\TokenExtractorInterface;
 use HalloVerden\JwtAuthenticatorBundle\Security\Authenticator\Token\JwtPostAuthenticationToken;
 use HalloVerden\JwtAuthenticatorBundle\Services\JwtServiceInterface;
@@ -12,6 +13,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
+use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
 use Symfony\Component\Security\Http\Authentication\AuthenticationFailureHandlerInterface;
 use Symfony\Component\Security\Http\Authenticator\AuthenticatorInterface;
@@ -70,7 +72,7 @@ class JwtAuthenticator implements AuthenticatorInterface {
     $token = $this->getToken($request);
     $jwt = $this->getJwt($request);
 
-    $passport = new SelfValidatingPassport(new UserBadge($jwt->getClaim($this->userIdentifierClaim), $this->userProvider->loadUserByIdentifier(...)));
+    $passport = new SelfValidatingPassport(new UserBadge($jwt->getClaim($this->userIdentifierClaim), fn(string $identifier) => $this->loadUser($identifier, $jwt)));
 
     $passport->setAttribute(self::PASSPORT_ATTRIBUTE_TOKEN, $token);
     $passport->setAttribute(self::PASSPORT_ATTRIBUTE_JWT, $jwt);
@@ -137,6 +139,24 @@ class JwtAuthenticator implements AuthenticatorInterface {
    */
   private function getToken(Request $request): string {
     return $request->attributes->get(self::REQUEST_ATTRIBUTE_TOKEN);
+  }
+
+  /**
+   * @param string $identifier
+   * @param Jwt    $jwt
+   *
+   * @return UserInterface
+   */
+  private function loadUser(string $identifier, Jwt $jwt): UserInterface {
+    if ($this->userProvider instanceof JwtAwareUserProviderInterface) {
+      $this->userProvider->loadUserByJwt($identifier, $jwt);
+    }
+
+    if (\method_exists($this->userProvider, 'loadUserByIdentifier')) {
+      return $this->userProvider->loadUserByIdentifier($identifier);
+    }
+
+    return $this->userProvider->loadUserByUsername($identifier);
   }
 
 }
