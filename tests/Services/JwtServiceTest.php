@@ -15,7 +15,7 @@ use PHPUnit\Framework\TestCase;
 
 class JwtServiceTest extends TestCase {
 
-  public function testParseAndVerify_validToken_shouldReturnJwt() {
+  public function testParseAndVerify_validToken_shouldReturnInstanceOfJwt() {
     $signatureMock = $this->createMock(Signature::class);
     $signatureMock->method('getProtectedHeader')->willReturn(['test' => 'ok']);
 
