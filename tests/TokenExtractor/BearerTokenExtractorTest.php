@@ -18,6 +18,16 @@ class BearerTokenExtractorTest extends TestCase {
     $this->assertEquals('test_token', $token);
   }
 
+  public function testExtractToken_requestWithoutBearer_shouldReturnNull() {
+    $request = new Request();
+    $request->headers->set('Authorization', 'test_token');
+
+    $bearerTokenExtractor = new BearerTokenExtractor();
+    $token = $bearerTokenExtractor->extractToken($request);
+
+    $this->assertNull($token);
+  }
+
   public function testExtractToken_requestWithoutToken_shouldReturnNull() {
     $request = new Request();
 
