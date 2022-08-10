@@ -93,7 +93,8 @@ class JwtAuthenticatorFactory implements AuthenticatorFactoryInterface {
       ->addArgument(new Reference($jwtServiceId))
       ->addArgument(new Reference($userProviderId))
       ->addArgument(isset($config['failure_handler']) ? new Reference($config['failure_handler']): null)
-      ->addArgument($config['user_identifier_claim']);
+      ->addArgument($config['user_identifier_claim'])
+      ->addArgument('jwt_authenticator.' . $key);
 
     return $authenticatorId;
   }

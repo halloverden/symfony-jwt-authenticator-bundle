@@ -8,6 +8,7 @@ use HalloVerden\JwtAuthenticatorBundle\Security\JwtAwareUserProviderInterface;
 use HalloVerden\JwtAuthenticatorBundle\TokenExtractor\TokenExtractorInterface;
 use HalloVerden\JwtAuthenticatorBundle\Security\Authenticator\Token\JwtPostAuthenticationToken;
 use HalloVerden\JwtAuthenticatorBundle\Services\JwtServiceInterface;
+use HalloVerden\SymfonyAuthenticatorRestrictorBundle\Interfaces\NamedAuthenticatorInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -22,7 +23,7 @@ use Symfony\Component\Security\Http\Authenticator\Passport\Passport;
 use Symfony\Component\Security\Http\Authenticator\Passport\PassportInterface;
 use Symfony\Component\Security\Http\Authenticator\Passport\SelfValidatingPassport;
 
-class JwtAuthenticator implements AuthenticatorInterface {
+class JwtAuthenticator implements AuthenticatorInterface, NamedAuthenticatorInterface {
   public const PASSPORT_ATTRIBUTE_TOKEN = 'token';
   public const PASSPORT_ATTRIBUTE_JWT = 'jwt';
 
@@ -37,7 +38,8 @@ class JwtAuthenticator implements AuthenticatorInterface {
     private readonly JwtServiceInterface                    $jwtService,
     private readonly UserProviderInterface                  $userProvider,
     private readonly ?AuthenticationFailureHandlerInterface $failureHandler = null,
-    private readonly string                                 $userIdentifierClaim = 'sub'
+    private readonly string                                 $userIdentifierClaim = 'sub',
+    private readonly string                                 $name = 'jwt_authenticator'
   ) {
   }
 
@@ -157,6 +159,13 @@ class JwtAuthenticator implements AuthenticatorInterface {
     }
 
     return $this->userProvider->loadUserByUsername($identifier);
+  }
+
+  /**
+   * @inheritDoc
+   */
+  public function getAuthenticatorName(): string {
+    return $this->name;
   }
 
 }
