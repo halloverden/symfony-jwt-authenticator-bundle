@@ -151,7 +151,7 @@ class JwtAuthenticator implements AuthenticatorInterface, NamedAuthenticatorInte
    */
   private function loadUser(string $identifier, Jwt $jwt): UserInterface {
     if ($this->userProvider instanceof JwtAwareUserProviderInterface) {
-      $this->userProvider->loadUserByJwt($identifier, $jwt);
+      return $this->userProvider->loadUserByJwt($identifier, $jwt);
     }
 
     if (\method_exists($this->userProvider, 'loadUserByIdentifier')) {
