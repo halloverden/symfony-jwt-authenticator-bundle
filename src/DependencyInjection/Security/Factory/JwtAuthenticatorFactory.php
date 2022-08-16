@@ -8,6 +8,7 @@ use Symfony\Bundle\SecurityBundle\DependencyInjection\Security\Factory\Authentic
 use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
 use Symfony\Component\Config\Definition\Builder\NodeDefinition;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\DependencyInjection\Reference;
 
 class JwtAuthenticatorFactory implements AuthenticatorFactoryInterface {
@@ -86,7 +87,8 @@ class JwtAuthenticatorFactory implements AuthenticatorFactoryInterface {
       ->addArgument(new Reference('jose.claim_checker.' . $config['claim_checker']))
       ->addArgument(new Reference('jose.jws_loader.' .$config['jws_loader']))
       ->addArgument(isset($config['key_set']) ? new Reference('jose.key_set.' . $config['key_set']) : null)
-      ->addArgument($mandatoryClaims);
+      ->addArgument($mandatoryClaims)
+      ->addArgument(new Reference('event_dispatcher', ContainerInterface::NULL_ON_INVALID_REFERENCE));
 
     $container->register($authenticatorId, JwtAuthenticator::class)
       ->addArgument(new Reference($config['token_extractor']))
