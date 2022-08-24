@@ -28,7 +28,7 @@ class JwtService implements JwtServiceInterface {
    */
   public function parseAndVerify(string $token): Jwt {
     try {
-      $jwt = $this->getJwt($token);
+      $jwt = $this->getJwt($token)->setRawToken($token);
     } catch (\Exception $e) {
       throw new InvalidTokenException($e->getMessage(), 0, $e);
     }
