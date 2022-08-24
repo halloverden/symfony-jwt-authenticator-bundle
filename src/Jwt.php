@@ -3,6 +3,7 @@
 namespace HalloVerden\JwtAuthenticatorBundle;
 
 final class Jwt {
+  private ?string $rawToken = null;
 
   /**
    * Jwt constructor.
@@ -43,6 +44,23 @@ final class Jwt {
    */
   public function getHeader(string $key): mixed {
     return $this->headers[$key] ?? null;
+  }
+
+  /**
+   * @return string|null
+   */
+  public function getRawToken(): ?string {
+    return $this->rawToken;
+  }
+
+  /**
+   * @param string|null $rawToken
+   *
+   * @return self
+   */
+  public function setRawToken(?string $rawToken): self {
+    $this->rawToken = $rawToken;
+    return $this;
   }
 
 }
