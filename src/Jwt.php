@@ -3,14 +3,14 @@
 namespace HalloVerden\JwtAuthenticatorBundle;
 
 final class Jwt {
-  private ?string $rawToken = null;
 
   /**
    * Jwt constructor.
    */
   public function __construct(
     private readonly array $claims,
-    private readonly array $headers
+    private readonly array $headers,
+    private readonly ?string $rawToken = null
   ) {
   }
 
@@ -51,16 +51,6 @@ final class Jwt {
    */
   public function getRawToken(): ?string {
     return $this->rawToken;
-  }
-
-  /**
-   * @param string|null $rawToken
-   *
-   * @return self
-   */
-  public function setRawToken(?string $rawToken): self {
-    $this->rawToken = $rawToken;
-    return $this;
   }
 
 }
