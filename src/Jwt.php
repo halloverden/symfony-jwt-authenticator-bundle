@@ -9,7 +9,8 @@ final class Jwt {
    */
   public function __construct(
     private readonly array $claims,
-    private readonly array $headers
+    private readonly array $headers,
+    private readonly ?string $rawToken = null
   ) {
   }
 
@@ -43,6 +44,13 @@ final class Jwt {
    */
   public function getHeader(string $key): mixed {
     return $this->headers[$key] ?? null;
+  }
+
+  /**
+   * @return string|null
+   */
+  public function getRawToken(): ?string {
+    return $this->rawToken;
   }
 
 }

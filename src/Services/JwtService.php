@@ -50,7 +50,7 @@ class JwtService implements JwtServiceInterface {
    */
   private function getJwt(string $token): Jwt {
     $jws = $this->jwsLoader->loadAndVerifyWithKeySet($token, $this->jwkSet, $signature);
-    return new Jwt(JsonConverter::decode($jws->getPayload()), $jws->getSignature($signature)->getProtectedHeader());
+    return new Jwt(JsonConverter::decode($jws->getPayload()), $jws->getSignature($signature)->getProtectedHeader(), $token);
   }
 
 }
