@@ -30,6 +30,8 @@ class JwtAuthenticator implements AuthenticatorInterface, NamedAuthenticatorInte
   public const REQUEST_ATTRIBUTE_TOKEN = 'security_jwt_authenticator_token';
   public const REQUEST_ATTRIBUTE_JWT = 'security_jwt_authenticator_jwt';
 
+  private bool $supported = false;
+
   /**
    * JwtAuthenticator constructor.
    */
@@ -47,7 +49,7 @@ class JwtAuthenticator implements AuthenticatorInterface, NamedAuthenticatorInte
    * @inheritDoc
    */
   public function supports(Request $request): ?bool {
-    if ($request->attributes->has(self::REQUEST_ATTRIBUTE_TOKEN) && $request->attributes->has(self::REQUEST_ATTRIBUTE_JWT)) {
+    if ($this->supported) {
       return true;
     }
 
@@ -64,7 +66,7 @@ class JwtAuthenticator implements AuthenticatorInterface, NamedAuthenticatorInte
 
     $request->attributes->set(self::REQUEST_ATTRIBUTE_TOKEN, $token);
     $request->attributes->set(self::REQUEST_ATTRIBUTE_JWT, $jwt);
-    return true;
+    return $this->supported = true;
   }
 
   /**
