@@ -25,7 +25,7 @@ class JwtAuthenticatorFactory implements AuthenticatorFactoryInterface {
   public function createAuthenticator(ContainerBuilder $container, string $firewallName, array $config, string $userProviderId): string|array {
     $authenticatorIds = [];
 
-    foreach ($config as $key => $c) {
+    foreach ($config['tokens'] as $key => $c) {
       $authenticatorIds[] = $this->_createAuthenticator($container, $firewallName, $c, $userProviderId, $key);
     }
 
@@ -44,27 +44,60 @@ class JwtAuthenticatorFactory implements AuthenticatorFactoryInterface {
    */
   public function addConfiguration(NodeDefinition $builder): void {
     $builder
-      ->useAttributeAsKey('name')
-      ->arrayPrototype()
-        ->children()
-          ->scalarNode('jws_loader')->defaultValue('hallo_verden_default')->end()
-          ->scalarNode('key_set')->isRequired()->end()
-          ->scalarNode('claim_checker')->defaultValue('hallo_verden_default')->end()
-          ->arrayNode('mandatory_claims')->defaultValue([])->scalarPrototype()->end()->end()
-          ->scalarNode('token_extractor')->defaultValue('hallo_verden.token_extractor.bearer')->end()
-          ->scalarNode('user_identifier_claim')->defaultValue('sub')->end()
-          ->scalarNode('failure_handler')->end()
-          ->scalarNode('provider')->defaultNull()->end()
+      ->children()
+        ->scalarNode('provider')->defaultNull()->end()
+        ->arrayNode('tokens')
+          ->useAttributeAsKey('name')
+          ->arrayPrototype()
+            ->children()
+            ->scalarNode('jws_loader')->defaultValue('hallo_verden_default')->end()
+            ->scalarNode('key_set')->isRequired()->end()
+            ->scalarNode('claim_checker')->defaultValue('hallo_verden_default')->end()
+            ->arrayNode('mandatory_claims')->defaultValue([])->scalarPrototype()->end()->end()
+            ->scalarNode('token_extractor')->defaultValue('hallo_verden.token_extractor.bearer')->end()
+            ->scalarNode('user_identifier_claim')->defaultValue('sub')->end()
+            ->scalarNode('failure_handler')->end()
+            ->scalarNode('provider')->defaultNull()->end()
+            ->end()
+          ->end()
         ->end()
-      ->end();
+      ->end()
+      ->beforeNormalization() // For backwards compatibility we wrap everything in "tokens" if the old config syntax is used.
+        ->ifTrue(function ($v): bool {
+          if (!\is_array($v)) {
+            return false;
+          }
 
-    // get the parent array node builder ("firewalls")
-    $factoryRootNode = $builder->end()->end();
-    $factoryRootNode
-      ->validate()
-        ->ifTrue(fn($v) => isset($v[$this->getKey()]) && empty($v[$this->getKey()]))
-        ->then(function ($v) {
-          unset($v[$this->getKey()]);
+          foreach ($v as $value) {
+            if (!(isset($value['key_set']) && \is_scalar($value['key_set']))) {
+              return false;
+            }
+          }
+
+          trigger_deprecation('halloverden/symfony-jwt-authenticator-bundle', '1.2', 'Not specifying "tokens" in "security.firewalls.hallo_verden_jwt" config is deprecated');
+          return true;
+        })
+        ->then(fn ($v) => ['tokens' => $v])
+      ->end()
+      ->beforeNormalization()
+        ->always(function ($v) {
+          if (isset($v['provider'])) {
+            return $v;
+          }
+
+          $tokens = $v['tokens'] ?? [];
+          if (empty($tokens) || !\is_array($tokens)) {
+            return $v;
+          }
+
+          $providers = \array_filter(\array_map(fn ($c) => $c['provider'] ?? null, $tokens));
+
+          // If a (user) provider is set on all tokens, we set the first provider as a global provider for "hallo_verden_jwt"
+          //   This will never be used, but is needed to suppress errors thrown by symfony that assumes we have no provider set.
+          if (count($providers) === count($tokens)) {
+            $v['provider'] = $providers[\array_key_first($providers)];
+          }
+
           return $v;
         })
       ->end();
