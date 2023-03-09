@@ -50,14 +50,21 @@ class JwtAuthenticatorFactory implements AuthenticatorFactoryInterface {
           ->useAttributeAsKey('name')
           ->arrayPrototype()
             ->children()
-            ->scalarNode('jws_loader')->defaultValue('hallo_verden_default')->end()
-            ->scalarNode('key_set')->isRequired()->end()
-            ->scalarNode('claim_checker')->defaultValue('hallo_verden_default')->end()
-            ->arrayNode('mandatory_claims')->defaultValue([])->scalarPrototype()->end()->end()
-            ->scalarNode('token_extractor')->defaultValue('hallo_verden.token_extractor.bearer')->end()
-            ->scalarNode('user_identifier_claim')->defaultValue('sub')->end()
-            ->scalarNode('failure_handler')->end()
-            ->scalarNode('provider')->defaultNull()->end()
+              ->scalarNode('jws_loader')->defaultValue('hallo_verden_default')->end()
+              ->scalarNode('key_set')->defaultNull()->end()
+              ->scalarNode('key')->defaultNull()->end()
+              ->scalarNode('claim_checker')->defaultValue('hallo_verden_default')->end()
+              ->arrayNode('mandatory_claims')->defaultValue([])->scalarPrototype()->end()->end()
+              ->scalarNode('token_extractor')->defaultValue('hallo_verden.token_extractor.bearer')->end()
+              ->scalarNode('user_identifier_claim')->defaultValue('sub')->end()
+              ->scalarNode('failure_handler')->end()
+              ->scalarNode('provider')->defaultNull()->end()
+            ->end()
+            ->validate()
+              ->ifTrue(function ($v) {
+                return null === ($v['key_set'] ?? null) && null == ($v['key'] ?? null);
+              })
+              ->thenInvalid('key or key_set must be set.')
             ->end()
           ->end()
         ->end()
@@ -69,7 +76,7 @@ class JwtAuthenticatorFactory implements AuthenticatorFactoryInterface {
           }
 
           foreach ($v as $value) {
-            if (!(isset($value['key_set']) && \is_scalar($value['key_set']))) {
+            if (!(isset($value['key_set']) && \is_scalar($value['key_set'])) && !(isset($value['key']) && \is_scalar($value['key']))) {
               return false;
             }
           }
