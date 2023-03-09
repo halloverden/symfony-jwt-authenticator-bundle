@@ -6,11 +6,13 @@ use HalloVerden\JwtAuthenticatorBundle\Exception\InvalidTokenException;
 use HalloVerden\JwtAuthenticatorBundle\Jwt;
 use Jose\Component\Checker\ClaimCheckerManager;
 use Jose\Component\Checker\ClaimExceptionInterface;
+use Jose\Component\Core\JWK;
 use Jose\Component\Core\JWKSet;
 use Jose\Component\Core\Util\JsonConverter;
 use Jose\Component\Signature\JWSLoader;
 
 class JwtService implements JwtServiceInterface {
+  private readonly JWKSet $jwkSet;
 
   /**
    * JwtService constructor.
@@ -18,9 +20,17 @@ class JwtService implements JwtServiceInterface {
   public function __construct(
     private readonly ClaimCheckerManager $claimCheckerManager,
     private readonly JWSLoader $jwsLoader,
-    private readonly JWKSet $jwkSet,
-    private readonly array $mandatoryClaims = []
+    ?JWKSet $jwkSet = null,
+    private readonly array $mandatoryClaims = [],
+    ?JWK $jwk = null,
   ) {
+    $jwkSet ??= new JWKSet([]);
+
+    if (null !== $jwk) {
+      $jwkSet = $jwkSet->with($jwk);
+    }
+
+    $this->jwkSet = $jwkSet;
   }
 
   /**
