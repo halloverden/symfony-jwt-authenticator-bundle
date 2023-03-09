@@ -129,7 +129,8 @@ class JwtAuthenticatorFactory implements AuthenticatorFactoryInterface {
       ->addArgument(new Reference('jose.claim_checker.' . $config['claim_checker']))
       ->addArgument(new Reference('jose.jws_loader.' .$config['jws_loader']))
       ->addArgument(isset($config['key_set']) ? new Reference('jose.key_set.' . $config['key_set']) : null)
-      ->addArgument($mandatoryClaims);
+      ->addArgument($mandatoryClaims)
+      ->addArgument(isset($config['key']) ? new Reference('jose.key.' . $config['key']) : null);
 
     $container->register($authenticatorId, JwtAuthenticator::class)
       ->addArgument(new Reference($config['token_extractor']))
