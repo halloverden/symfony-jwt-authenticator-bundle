@@ -37,22 +37,22 @@ class JwtService implements JwtServiceInterface {
     try {
       $jwt = $this->getJwt($token);
     } catch (\Exception $e) {
+      $this->stopwatch->stop('parse');
       $this->stopwatch->stop('parseAndVerify');
       throw new InvalidTokenException($e->getMessage(), 0, $e);
-    } finally {
-      $this->stopwatch->stop('parse');
     }
+    $this->stopwatch->stop('parse');
 
     $this->stopwatch->start('verify');
     try {
       $this->claimCheckerManager->check($jwt->getClaims(), $this->mandatoryClaims);
     } catch (ClaimExceptionInterface $e) {
+      $this->stopwatch->stop('verify');
       $this->stopwatch->stop('parseAndVerify');
       throw new InvalidTokenException($e->getMessage(), 0, $e);
-    } finally {
-      $this->stopwatch->stop('verify');
     }
 
+    $this->stopwatch->stop('verify');
     $this->stopwatch->stop('parseAndVerify');
     return $jwt;
   }
