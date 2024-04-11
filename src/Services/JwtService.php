@@ -12,6 +12,7 @@ use Jose\Component\Core\Util\JsonConverter;
 use Jose\Component\Signature\JWS;
 use Jose\Component\Signature\JWSLoader;
 use Jose\Component\Signature\Signature;
+use Symfony\Component\Stopwatch\Stopwatch;
 
 class JwtService implements JwtServiceInterface {
 
@@ -22,6 +23,7 @@ class JwtService implements JwtServiceInterface {
     private readonly ClaimCheckerManager $claimCheckerManager,
     private readonly JWSLoader $jwsLoader,
     private readonly JWKSet $jwkSet,
+    private readonly Stopwatch $stopwatch,
     private readonly array $mandatoryClaims = []
   ) {
   }
