@@ -32,7 +32,7 @@
         "web-token/jwt-signature-algorithm-rsa": "^3.0",
         "symfony/yaml": "^5.4|^6.0",
         "halloverden/symfony-authenticator-restrictor-bundle": "^1.0",
-        "symfony/stopwatch": "^7.0"
+        "symfony/stopwatch": "^6.4"
     },
     "require-dev": {
         "symfony/phpunit-bridge": "^6.4|^6.0"
