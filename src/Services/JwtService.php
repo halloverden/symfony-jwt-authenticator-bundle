@@ -47,6 +47,7 @@ class JwtService implements JwtServiceInterface {
     try {
       $this->claimCheckerManager->check($jwt->getClaims(), $this->mandatoryClaims);
     } catch (ClaimExceptionInterface $e) {
+      $this->stopwatch->stop('parseAndVerify');
       throw new InvalidTokenException($e->getMessage(), 0, $e);
     } finally {
       $this->stopwatch->stop('verify');
