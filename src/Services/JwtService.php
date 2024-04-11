@@ -107,10 +107,13 @@ class JwtService implements JwtServiceInterface {
       $jwkSet = $this->jwkSet;
     }
 
+    $this->stopwatch->start('verifySignature');
     try {
       return $this->jwsLoader->getJwsVerifier()->verifyWithKeySet($jws, $jwkSet, $signatureIndex);
     } catch (\Throwable) {
       return false;
+    } finally {
+      $this->stopwatch->stop('verifySignature');
     }
   }
 
