@@ -4,10 +4,10 @@ namespace HalloVerden\JwtAuthenticatorBundle\Tests\Security\Authenticator;
 
 use HalloVerden\JwtAuthenticatorBundle\Exception\InvalidTokenException;
 use HalloVerden\JwtAuthenticatorBundle\Jwt;
-use HalloVerden\JwtAuthenticatorBundle\TokenExtractor\TokenExtractorInterface;
+use HalloVerden\JwtAuthenticatorBundle\Passport\Badge\JwtBadge;
 use HalloVerden\JwtAuthenticatorBundle\Security\Authenticator\JwtAuthenticator;
-use HalloVerden\JwtAuthenticatorBundle\Security\Authenticator\Token\JwtPostAuthenticationToken;
 use HalloVerden\JwtAuthenticatorBundle\Services\JwtServiceInterface;
+use HalloVerden\JwtAuthenticatorBundle\TokenExtractor\TokenExtractorInterface;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -35,26 +35,36 @@ class JwtAuthenticatorTest extends TestCase {
     $jwtAuthenticator = new JwtAuthenticator($tokenExtractor, $jwtService, $userProvider);
 
     $request = new Request();
-
-    $jwtAuthenticator->supports($request);
-    $this->assertEquals('token', $request->attributes->get('security_jwt_authenticator_token'));
-    $this->assertSame($jwt, $request->attributes->get('security_jwt_authenticator_jwt'));
-
     $passport = $jwtAuthenticator->authenticate($request);
 
     $this->assertInstanceOf(SelfValidatingPassport::class, $passport);
-    $this->assertEquals('token', $passport->getAttribute('token'));
-    $this->assertSame($jwt, $passport->getAttribute('jwt'));
     $this->assertSame($user, $passport->getUser());
+
+    $jwtBadge = $passport->getBadge(JwtBadge::class);
+    $this->assertInstanceOf(JwtBadge::class, $jwtBadge);
+    $this->assertSame($jwt, $jwtBadge->getJwt());
   }
 
-  public function testSupports_invalidToken_shouldReturnFalse() {
+  public function testSupports_hasToken_shouldReturnNull() {
     $tokenExtractor = $this->createMock(TokenExtractorInterface::class);
     $tokenExtractor->method('extractToken')->willReturn('token');
 
     $jwtService = $this->createMock(JwtServiceInterface::class);
-    $jwtService->method('parseAndVerify')->willThrowException(new InvalidTokenException());
+    $userProvider = $this->createMock(DummyUserProvider::class);
 
+    $jwtAuthenticator = new JwtAuthenticator($tokenExtractor, $jwtService, $userProvider);
+
+    $request = new Request();
+
+    $supports = $jwtAuthenticator->supports($request);
+    $this->assertNull($supports);
+  }
+
+  public function testSupports_noToken_shouldReturnFalse() {
+    $tokenExtractor = $this->createMock(TokenExtractorInterface::class);
+    $tokenExtractor->method('extractToken')->willReturn(null);
+
+    $jwtService = $this->createMock(JwtServiceInterface::class);
     $userProvider = $this->createMock(DummyUserProvider::class);
 
     $jwtAuthenticator = new JwtAuthenticator($tokenExtractor, $jwtService, $userProvider);
@@ -81,7 +91,7 @@ class JwtAuthenticatorTest extends TestCase {
     $this->assertEquals('{"error":"INVALID_TOKEN"}', $response->getContent());
   }
 
-  public function testCreateToken_passport_shouldReturnJwtPostAuthenticationToken() {
+  public function testCreateToken_passport_shouldReturnPostAuthenticationToken() {
     $tokenExtractor = $this->createMock(TokenExtractorInterface::class);
     $jwtService = $this->createMock(JwtServiceInterface::class);
     $userProvider = $this->createMock(DummyUserProvider::class);
@@ -94,19 +104,11 @@ class JwtAuthenticatorTest extends TestCase {
 
     $passport = $this->createMock(Passport::class);
     $passport->method('getUser')->willReturn($user);
-    $passport->method('getAttribute')->willReturnCallback(function ($key) use ($jwt) {
-      return match ($key) {
-        'token' => 'token',
-        'jwt' => $jwt,
-        default => null,
-      };
-    });
 
     $token = $jwtAuthenticator->createToken($passport, 'firewall');
 
-    $this->assertInstanceOf(JwtPostAuthenticationToken::class, $token);
-    $this->assertEquals('token', $token->getToken());
-    $this->assertSame($jwt, $token->getJwt());
+    $this->assertInstanceOf(InMemoryUser::class, $token->getUser());
+    $this->assertSame('username', $token->getUser()->getUserIdentifier());
   }
 
 }
