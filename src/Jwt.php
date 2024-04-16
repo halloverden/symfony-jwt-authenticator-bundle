@@ -2,15 +2,15 @@
 
 namespace HalloVerden\JwtAuthenticatorBundle;
 
-final class Jwt {
+final readonly class Jwt {
 
   /**
    * Jwt constructor.
    */
   public function __construct(
-    private readonly array $claims,
-    private readonly array $headers,
-    private readonly ?string $rawToken = null
+    private array   $claims,
+    private array   $headers,
+    private ?string $rawToken = null
   ) {
   }
 
