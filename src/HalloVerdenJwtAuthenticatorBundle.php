@@ -7,12 +7,12 @@ use Symfony\Bundle\SecurityBundle\DependencyInjection\SecurityExtension;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 
-class HalloVerdenJwtAuthenticatorBundle extends Bundle {
+final class HalloVerdenJwtAuthenticatorBundle extends Bundle {
 
   /**
    * @inheritDoc
    */
-  public function build(ContainerBuilder $container) {
+  public function build(ContainerBuilder $container): void {
     parent::build($container);
 
     /** @var SecurityExtension $extension */
