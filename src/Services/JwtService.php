@@ -13,16 +13,16 @@ use Jose\Component\Signature\JWS;
 use Jose\Component\Signature\JWSLoader;
 use Jose\Component\Signature\Signature;
 
-class JwtService implements JwtServiceInterface {
+final readonly class JwtService implements JwtServiceInterface {
 
   /**
    * JwtService constructor.
    */
   public function __construct(
-    private readonly ClaimCheckerManager $claimCheckerManager,
-    private readonly JWSLoader $jwsLoader,
-    private readonly JWKSet $jwkSet,
-    private readonly array $mandatoryClaims = []
+    private ClaimCheckerManager $claimCheckerManager,
+    private JWSLoader           $jwsLoader,
+    private JWKSet              $jwkSet,
+    private array $mandatoryClaims = []
   ) {
   }
 
