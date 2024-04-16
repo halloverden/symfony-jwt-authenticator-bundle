@@ -9,13 +9,13 @@ use Symfony\Component\DependencyInjection\Extension\Extension;
 use Symfony\Component\DependencyInjection\Extension\PrependExtensionInterface;
 use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
 
-class HalloVerdenJwtAuthenticatorExtension extends Extension implements PrependExtensionInterface {
+final class HalloVerdenJwtAuthenticatorExtension extends Extension implements PrependExtensionInterface {
 
   /**
    * @inheritDoc
    * @throws \Exception
    */
-  public function load(array $configs, ContainerBuilder $container) {
+  public function load(array $configs, ContainerBuilder $container): void {
     $loader = new YamlFileLoader($container, new FileLocator(__DIR__ . '/../../config'));
     $loader->load('services.yaml');
   }
@@ -23,7 +23,7 @@ class HalloVerdenJwtAuthenticatorExtension extends Extension implements PrependE
   /**
    * @inheritDoc
    */
-  public function prepend(ContainerBuilder $container) {
+  public function prepend(ContainerBuilder $container): void {
     ConfigurationHelper::addJWSLoader(
       $container,
       'hallo_verden_default',
