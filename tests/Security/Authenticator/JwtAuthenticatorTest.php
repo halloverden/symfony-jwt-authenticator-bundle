@@ -23,7 +23,7 @@ class JwtAuthenticatorTest extends TestCase {
     $tokenExtractor = $this->createMock(TokenExtractorInterface::class);
     $tokenExtractor->method('extractToken')->willReturn('token');
 
-    $jwt = new Jwt(['sub' => '123'],[]);
+    $jwt = new Jwt(['sub' => '123'],[], 'token');
     $jwtService = $this->createMock(JwtServiceInterface::class);
     $jwtService->method('parseAndVerify')->willReturn($jwt);
 
@@ -99,8 +99,6 @@ class JwtAuthenticatorTest extends TestCase {
     $jwtAuthenticator = new JwtAuthenticator($tokenExtractor, $jwtService, $userProvider);
 
     $user = new InMemoryUser('username', 'password');
-
-    $jwt = new Jwt([],[]);
 
     $passport = $this->createMock(Passport::class);
     $passport->method('getUser')->willReturn($user);

@@ -8,9 +8,9 @@ final readonly class Jwt {
    * Jwt constructor.
    */
   public function __construct(
-    private array   $claims,
-    private array   $headers,
-    private ?string $rawToken = null
+    private array  $claims,
+    private array  $headers,
+    private string $rawToken
   ) {
   }
 
@@ -47,9 +47,9 @@ final readonly class Jwt {
   }
 
   /**
-   * @return string|null
+   * @return string
    */
-  public function getRawToken(): ?string {
+  public function getRawToken(): string {
     return $this->rawToken;
   }
 
