@@ -6,6 +6,7 @@ use HalloVerden\JwtAuthenticatorBundle\Exception\InvalidTokenException;
 use HalloVerden\JwtAuthenticatorBundle\Jwt;
 use HalloVerden\JwtAuthenticatorBundle\Passport\Badge\JwtBadge;
 use HalloVerden\JwtAuthenticatorBundle\Security\Authenticator\JwtAuthenticator;
+use HalloVerden\JwtAuthenticatorBundle\Security\JwtPostAuthenticationToken;
 use HalloVerden\JwtAuthenticatorBundle\Services\JwtServiceInterface;
 use HalloVerden\JwtAuthenticatorBundle\TokenExtractor\TokenExtractorInterface;
 use PHPUnit\Framework\TestCase;
@@ -99,12 +100,16 @@ class JwtAuthenticatorTest extends TestCase {
     $jwtAuthenticator = new JwtAuthenticator($tokenExtractor, $jwtService, $userProvider);
 
     $user = new InMemoryUser('username', 'password');
+    $jwt = new Jwt([], [], 'token');
 
     $passport = $this->createMock(Passport::class);
     $passport->method('getUser')->willReturn($user);
+    $passport->method('getBadge')->willReturn(new JwtBadge($jwt));
 
     $token = $jwtAuthenticator->createToken($passport, 'firewall');
 
+    $this->assertInstanceOf(JwtPostAuthenticationToken::class, $token);
+    $this->assertSame($jwt, $token->getJwt());
     $this->assertInstanceOf(InMemoryUser::class, $token->getUser());
     $this->assertSame('username', $token->getUser()->getUserIdentifier());
   }
