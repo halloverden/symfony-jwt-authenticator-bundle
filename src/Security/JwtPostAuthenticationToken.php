@@ -6,7 +6,7 @@ use HalloVerden\JwtAuthenticatorBundle\Jwt;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Http\Authenticator\Token\PostAuthenticationToken;
 
-class JwtPostAuthenticationToken extends PostAuthenticationToken {
+final class JwtPostAuthenticationToken extends PostAuthenticationToken {
 
   /**
    * @inheritDoc
