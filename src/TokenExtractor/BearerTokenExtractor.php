@@ -4,7 +4,7 @@ namespace HalloVerden\JwtAuthenticatorBundle\TokenExtractor;
 
 use Symfony\Component\HttpFoundation\Request;
 
-class BearerTokenExtractor implements TokenExtractorInterface {
+final readonly class BearerTokenExtractor implements TokenExtractorInterface {
   private const HEADER_AUTHORIZATION = 'Authorization';
   private const AUTHORIZATION_TYPE_BEARER = 'Bearer';
 

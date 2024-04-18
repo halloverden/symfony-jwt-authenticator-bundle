@@ -59,21 +59,15 @@ security:
     main:
       hallo_verden_jwt:
         provider: 'user_provider'
-        tokens:
-          jwt_name:
-            key_set: 'my_key_set'
-            jws_loader: 'hallo_verden_default'
-            claim_checker: 'hallo_verden_default'
-            mandatory_claims: []
-            user_identifier_claim: 'sub'
-            token_extractor: 'hallo_verden.token_extractor.bearer'
-            failure_handler: ~
-            provider: 'user_provider'
-          some_other_jwt:
-            key_set: 'my_ket_set'
+        failure_handler: ~
+        token:
+          key_set: 'my_key_set'
+          jws_loader: 'hallo_verden_default'
+          claim_checker: 'hallo_verden_default'
+          mandatory_claims: []
+          user_identifier_claim: 'sub'
+          token_extractor: 'hallo_verden.token_extractor.bearer'
 ```
-
-For each key in `hallo_verden_jwt` an authenticator is created.
 
 #### Key set (`key_set`)
 

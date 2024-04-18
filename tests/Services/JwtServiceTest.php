@@ -10,6 +10,8 @@ use Jose\Component\Checker\InvalidClaimException;
 use Jose\Component\Core\JWKSet;
 use Jose\Component\Signature\JWS;
 use Jose\Component\Signature\JWSLoader;
+use Jose\Component\Signature\JWSVerifier;
+use Jose\Component\Signature\Serializer\JWSSerializerManager;
 use Jose\Component\Signature\Signature;
 use PHPUnit\Framework\TestCase;
 
@@ -21,17 +23,20 @@ class JwtServiceTest extends TestCase {
 
     $jwsMock = $this->createMock(JWS::class);
     $jwsMock->method('getPayload')->willReturn('{"test": "ok"}');
-    $jwsMock->method('getSignature')->willReturn($signatureMock);
+    $jwsMock->method('getSignatures')->willReturn([$signatureMock]);
 
     $claimCheckerManager = $this->createMock(ClaimCheckerManager::class);
     $claimCheckerManager->method('check')->willReturn([]);
 
+    $jwsVerifier = $this->createMock(JWSVerifier::class);
+    $jwsVerifier->method('verifyWithKeySet')->willReturn(true);
+
+    $serializerManager = $this->createMock(JWSSerializerManager::class);
+    $serializerManager->method('unserialize')->willReturn($jwsMock);
+
     $jwsLoader = $this->createMock(JWSLoader::class);
-    $jwsLoader->method('loadAndVerifyWithKeySet')->willReturnCallback(
-      function (string $token, JWKSet $keyset, ?int &$signature, ?string $payload = null) use ($jwsMock) {
-        $signature = 0;
-        return $jwsMock;
-      });
+    $jwsLoader->method('getJwsVerifier')->willReturn($jwsVerifier);
+    $jwsLoader->method('getSerializerManager')->willReturn($serializerManager);
 
     $jwkSet = $this->createMock(JWKSet::class);
 

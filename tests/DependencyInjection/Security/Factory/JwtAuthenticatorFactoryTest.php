@@ -11,15 +11,7 @@ class JwtAuthenticatorFactoryTest extends TestCase {
   public function testCreateAuthenticator_shouldCreateAuthenticators() {
     $container = new ContainerBuilder();
     $config = [
-      'test_token_1' => [
-        'jws_loader' => 'test_loader',
-        'claim_checker' => 'test_claim_checker',
-        'key_set' => 'test_key_set',
-        'mandatory_claims' => [],
-        'token_extractor' => 'test_token_extractor',
-        'user_identifier_claim' => 'sub'
-      ],
-      'test_token_2' => [
+      'token' => [
         'jws_loader' => 'test_loader',
         'claim_checker' => 'test_claim_checker',
         'key_set' => 'test_key_set',
@@ -30,15 +22,12 @@ class JwtAuthenticatorFactoryTest extends TestCase {
     ];
     $jwtAuthenticatorFactory = new JwtAuthenticatorFactory();
 
-    $authenticatorIds = $jwtAuthenticatorFactory->createAuthenticator($container, 'main', $config, 'userProviderId');
-    $this->assertContains('security.authenticator.hallo_verden_jwt.test_token_1.main', $authenticatorIds);
-    $this->assertContains('security.authenticator.hallo_verden_jwt.test_token_2.main', $authenticatorIds);
+    $authenticatorId = $jwtAuthenticatorFactory->createAuthenticator($container, 'main', $config, 'userProviderId');
+    $this->assertSame('security.authenticator.hallo_verden_jwt.main', $authenticatorId);
 
     $definitions = $container->getDefinitions();
-    $this->assertArrayHasKey('security.authenticator.hallo_verden_jwt.test_token_1.main', $definitions);
-    $this->assertArrayHasKey('security.authenticator.hallo_verden_jwt.test_token_2.main', $definitions);
-    $this->assertArrayHasKey('hallo_verden.jwt_service.test_token_1.main', $definitions);
-    $this->assertArrayHasKey('hallo_verden.jwt_service.test_token_2.main', $definitions);
+    $this->assertArrayHasKey('security.authenticator.hallo_verden_jwt.main', $definitions);
+    $this->assertArrayHasKey('hallo_verden.jwt_service.main', $definitions);
   }
 
 }
