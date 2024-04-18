@@ -3,6 +3,7 @@
 namespace HalloVerden\JwtAuthenticatorBundle\Security\Authenticator;
 
 use HalloVerden\JwtAuthenticatorBundle\Passport\Badge\JwtBadge;
+use HalloVerden\JwtAuthenticatorBundle\Security\JwtPostAuthenticationToken;
 use HalloVerden\JwtAuthenticatorBundle\Services\JwtServiceInterface;
 use HalloVerden\JwtAuthenticatorBundle\TokenExtractor\TokenExtractorInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -17,7 +18,6 @@ use Symfony\Component\Security\Http\Authenticator\AuthenticatorInterface;
 use Symfony\Component\Security\Http\Authenticator\Passport\Badge\UserBadge;
 use Symfony\Component\Security\Http\Authenticator\Passport\Passport;
 use Symfony\Component\Security\Http\Authenticator\Passport\SelfValidatingPassport;
-use Symfony\Component\Security\Http\Authenticator\Token\PostAuthenticationToken;
 
 final readonly class JwtAuthenticator implements AuthenticatorInterface {
 
@@ -77,10 +77,11 @@ final readonly class JwtAuthenticator implements AuthenticatorInterface {
    * @inheritDoc
    */
   public function createToken(Passport $passport, string $firewallName): TokenInterface {
-    return new PostAuthenticationToken(
+    return new JwtPostAuthenticationToken(
       $passport->getUser(),
       $firewallName,
       $passport->getUser()->getRoles(),
+      $passport->getBadge(JwtBadge::class)->getJwt()
     );
   }
 
