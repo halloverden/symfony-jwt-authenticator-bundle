@@ -11,6 +11,7 @@ use Jose\Component\Core\JWKSet;
 use Jose\Component\Signature\JWS;
 use Jose\Component\Signature\JWSLoader;
 use Jose\Component\Signature\JWSVerifier;
+use Jose\Component\Signature\Serializer\JWSSerializer;
 use Jose\Component\Signature\Serializer\JWSSerializerManager;
 use Jose\Component\Signature\Signature;
 use PHPUnit\Framework\TestCase;
@@ -31,8 +32,11 @@ class JwtServiceTest extends TestCase {
     $jwsVerifier = $this->createMock(JWSVerifier::class);
     $jwsVerifier->method('verifyWithKeySet')->willReturn(true);
 
-    $serializerManager = $this->createMock(JWSSerializerManager::class);
-    $serializerManager->method('unserialize')->willReturn($jwsMock);
+    $serializer = $this->createMock(JWSSerializer::class);
+    $serializer->method('unserialize')->willReturn($jwsMock);
+    $serializer->method('name')->willReturn('test');
+
+    $serializerManager = new JWSSerializerManager([$serializer]);
 
     $jwsLoader = $this->createMock(JWSLoader::class);
     $jwsLoader->method('getJwsVerifier')->willReturn($jwsVerifier);
